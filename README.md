@@ -15,7 +15,7 @@
 
 Maximum speed for parsing and converting Java Objects to JSON format:
 * Use various parsing options
-* Multi-threaded parsing and conversion
+* Multi-thread parsing and conversion
 * Flexibility
 
 The qualities listed above fully describe the performance of this library.
