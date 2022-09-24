@@ -64,6 +64,9 @@ public class CommonNodesonParser extends AbstractNodesonParser {
             else if (value instanceof Number || value.getClass().isPrimitive()) {
                 stringBuffer.append(value);
             }
+            else if (value instanceof Node) {
+                stringBuffer.append(parse(((Node) value).getValue()));
+            }
             else {
                 stringBuffer.append(parse(toNodeson(value)));
             }
