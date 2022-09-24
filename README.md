@@ -24,7 +24,38 @@ The qualities listed above fully describe the performance of this library.
 
 ## HOW TO USE?
 
-**< Soon >**
+
+First, let's define what kind of parser we need.
+
+There are only two types of parsing in this library:
+* Common
+```java
+NodesonParser common = Nodeson.common();
+```
+* Parallel (Multi-Threaded)
+
+```java
+NodesonParser parallel = Nodeson.parallel();
+```
+
+
+Then we can already reproduce the necessary parsing algorithms.
+
+Let's try to parse an object to JSON and back, measuring the speed:
+
+**Common:** (189ms)
+```java
+String json = common.parse(testObject); // 178ms
+        
+TestObject converted = common.convert(json, TestObject.class); // 11ms
+```
+
+**Parallel:** (20ms)
+```java
+String json = parallel.parse(testObject); // 18ms
+        
+TestObject converted = parallel.convert(json, TestObject.class); // 2ms
+```
 
 ---
 
