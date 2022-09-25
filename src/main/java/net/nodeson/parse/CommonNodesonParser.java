@@ -11,7 +11,7 @@ public class CommonNodesonParser extends AbstractNodesonParser {
         try {
             return new NodesonObject(this, NodesonUnsafe.toNodesMap(src));
         }
-        catch (IllegalAccessException exception) {
+        catch (Throwable exception) {
             throw new RuntimeException(exception);
         }
     }

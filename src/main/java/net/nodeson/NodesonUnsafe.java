@@ -4,6 +4,8 @@ import lombok.experimental.UtilityClass;
 import net.nodeson.exception.NodesonApplyingException;
 import sun.misc.Unsafe;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -25,7 +27,12 @@ public class NodesonUnsafe {
         }
     }
 
+    private final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
+
     private final Map<Class<?>, NodesonMap> TYPES_VARIABLES_MAP = new HashMap<>();
+
+    private final Map<Field, MethodHandle> FIELDS_GETTERS_MAP = new HashMap<>(),
+            FIELDS_SETTERS_MAP = new HashMap<>();
 
     public synchronized <T> T allocate(Class<T> type) {
         try {
@@ -40,7 +47,7 @@ public class NodesonUnsafe {
     }
 
     public synchronized NodesonMap toNodesMap(Object src)
-    throws IllegalAccessException {
+    throws Throwable {
 
         Class<?> type = src.getClass();
 
@@ -59,7 +66,16 @@ public class NodesonUnsafe {
                 field.setAccessible(true);
             }
 
-            map.put(field.getName(), field.get(src));
+            MethodHandle getter = FIELDS_GETTERS_MAP.computeIfAbsent(field, __ -> {
+                try {
+                    return LOOKUP.unreflectGetter(field);
+                }
+                catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            map.put(field.getName(), getter.invoke(src));
         }
 
         TYPES_VARIABLES_MAP.put(type, map);
@@ -126,9 +142,18 @@ public class NodesonUnsafe {
                     field.setAccessible(true);
                 }
 
-                field.set(source, value);
+                MethodHandle setter = FIELDS_SETTERS_MAP.computeIfAbsent(field, __ -> {
+                    try {
+                        return LOOKUP.unreflectSetter(field);
+                    }
+                    catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                setter.invoke(source, value);
             }
-            catch (IllegalAccessException | NoSuchFieldException e) {
+            catch (Throwable e) {
                 throw new NodesonApplyingException("Cannot be apply %s for %s", nodesonObject, type);
             }
 
