@@ -12,6 +12,6 @@ public final class BooleanAdapter extends AbstractToStringAdapter<Boolean> {
             return Boolean.parseBoolean(json);
         }
 
-        throw new NodesonAdapterException("Value '%s' isn`t instanceof a Number");
+        throw new NodesonAdapterException("Value '%s' isn`t instanceof a Boolean");
     }
 }
