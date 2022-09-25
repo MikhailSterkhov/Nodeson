@@ -2,9 +2,9 @@ package net.nodeson;
 
 import lombok.NonNull;
 
-public interface NodesonAdapter<T, C> {
+public interface NodesonAdapter<T> {
 
-    void serialize(@NonNull T source, @NonNull C converter);
+    String serialize(@NonNull T source);
 
-    T deserialize(@NonNull C converter);
+    T deserialize(@NonNull Class<? extends T> type, @NonNull String json);
 }

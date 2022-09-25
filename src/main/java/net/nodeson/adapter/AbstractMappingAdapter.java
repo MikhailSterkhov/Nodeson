@@ -1,17 +1,25 @@
 package net.nodeson.adapter;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import net.nodeson.NodesonAdapter;
-import net.nodeson.NodesonMap;
-import net.nodeson.NodesonParser;
+import lombok.NonNull;
+import net.nodeson.*;
 
-@RequiredArgsConstructor
-@FieldDefaults(makeFinal = true)
-public abstract class AbstractMappingAdapter<T> implements NodesonAdapter<T, NodesonMap> {
+public abstract class AbstractMappingAdapter<T> implements NodesonAdapter<T> {
 
-    @Getter(AccessLevel.PROTECTED)
-    private NodesonParser callingSource;
+    protected static final NodesonParser COMMON_PARSER = Nodeson.common();
+
+    protected abstract NodesonObject doSerialize(@NonNull T source);
+
+    protected abstract NodesonObject doDeserialize(@NonNull String json);
+
+    @Override
+    public String serialize(@NonNull T source) {
+        NodesonObject nodesonObject = doSerialize(source);
+        return COMMON_PARSER.parse(nodesonObject);
+    }
+
+    @Override
+    public T deserialize(@NonNull Class<? extends T> type, @NonNull String json) {
+        NodesonObject nodesonObject = doDeserialize(json);
+        return COMMON_PARSER.convert(nodesonObject, type);
+    }
 }

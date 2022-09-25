@@ -27,7 +27,7 @@ public class NodesonUnsafe {
 
     private final Map<Class<?>, NodesonMap> TYPES_VARIABLES_MAP = new HashMap<>();
 
-    public <T> T allocate(Class<T> type) {
+    public synchronized <T> T allocate(Class<T> type) {
         try {
             @SuppressWarnings("unchecked") T instance
                     = (T) sunUnsafe.allocateInstance(type);
@@ -39,7 +39,7 @@ public class NodesonUnsafe {
         }
     }
 
-    public NodesonMap toNodesMap(Object src)
+    public synchronized NodesonMap toNodesMap(Object src)
     throws IllegalAccessException {
 
         Class<?> type = src.getClass();
@@ -66,18 +66,67 @@ public class NodesonUnsafe {
         return map;
     }
 
-    public void applyNodes(Object source, NodesonObject nodesonObject) {
+    public synchronized Class<?> getObjectType(Class<?> type) {
+        if (Number.class.isAssignableFrom(type)) {
+            return Number.class;
+        }
+        else if (type.isPrimitive()) {
+
+            if (type.isAssignableFrom(boolean.class)) {
+                return Boolean.class;
+            }
+            else {
+                return Number.class;
+            }
+        }
+
+        return type;
+    }
+
+    public synchronized Class<?> getObjectType(Object src) {
+        return getObjectType(src.getClass());
+    }
+
+    public synchronized void applyNodes(Object source, NodesonObject nodesonObject) {
+        if (source instanceof NodesonObjectBuilder) {
+            applyNodes(((NodesonObjectBuilder) source).build(), nodesonObject);
+            return;
+        }
+
+        if (source instanceof NodesonObject) {
+            nodesonObject.forEachOrdered(node -> {
+
+                ((NodesonObject) source).addNode(node);
+                return true;
+            });
+
+            return;
+        }
+
         Class<?> type = source.getClass();
 
         nodesonObject.forEachOrdered(node -> {
+            Object value = node.getValue();
 
             try {
-                Field declaredField = type.getDeclaredField(node.getName());
+                Field field = type.getDeclaredField(node.getName());
 
-                if (!declaredField.isAccessible()) {
-                    declaredField.setAccessible(true);
+                Class<?> fieldType = getObjectType(field.getType());
+                Class<?> valueType = getObjectType(value);
+
+                if (!valueType.equals(fieldType)) {
+
+                    NodesonAdapter<Object> fieldAdapter = Nodeson.getNodesonInstance().getCheckedAdapter(fieldType);
+                    NodesonAdapter<Object> valueAdapter = Nodeson.getNodesonInstance().getCheckedAdapter(valueType);
+
+                    value = fieldAdapter.deserialize(fieldType, valueAdapter.serialize(value));
                 }
-                declaredField.set(source, node.getValue());
+
+                if (!field.isAccessible()) {
+                    field.setAccessible(true);
+                }
+
+                field.set(source, value);
             }
             catch (IllegalAccessException | NoSuchFieldException e) {
                 throw new NodesonApplyingException("Cannot be apply %s for %s", nodesonObject, type);

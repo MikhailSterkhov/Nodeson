@@ -72,7 +72,7 @@ public class JsonTokenizer implements Enumeration<Node> {
     }
 
     private boolean isObject(String value) {
-        return value.startsWith("{") && value.endsWith("}");
+        return value.startsWith("{");
     }
 
     private Object valueToObject(String value) {
@@ -89,10 +89,10 @@ public class JsonTokenizer implements Enumeration<Node> {
             return Double.parseDouble(value);
         }
         else if (isObject(value)) {
-            return parser.convert(value, Object.class);
+            return parser.toNodeson(value);
         }
 
-        throw new NodesonTokenizeException("Value %s can`t be initialize", value);
+        throw new NodesonTokenizeException("Value '%s' can`t be initialize", value);
     }
 
     @Override
@@ -149,9 +149,49 @@ public class JsonTokenizer implements Enumeration<Node> {
                     throw new NodesonTokenizeException("'%s' - incorrect format", json);
                 }
 
-                String valueAsString = part.substring(1, part.contains(",") ? part.indexOf(',') : part.length() - 1);
-                doNext(valueAsString.length() + 1, TypeToken.NODE_VALUE);
+                String valueAsString;
+                part = part.substring(1); // remove ':' sign
 
+                if (part.startsWith("{")) {
+
+                    // find end-object sign index.
+                    int lastInternalBeginIndex = 0;
+                    int lastInternalEndIndex = 0;
+
+                    boolean blocked = false;
+
+                    for (int i = 1; i < part.length() - 1; i++) {
+
+                        // skip strings values.
+                        if (part.charAt(i) == '"') {
+                            blocked = !blocked;
+                        }
+
+                        if (!blocked) {
+                            char sign = part.charAt(i);
+
+                            if (sign == '{') {
+                                lastInternalBeginIndex = i;
+                            }
+                            else if (sign == '}') {
+
+                                if (lastInternalBeginIndex > 0) {
+                                    lastInternalEndIndex = i;
+                                }
+                                else {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    valueAsString = part.substring(0, part.indexOf('}', lastInternalEndIndex) + 1);
+
+                } else {
+                    valueAsString = part.substring(0, part.contains(",") ? part.indexOf(',') : part.length() - 1);
+                }
+
+                doNext(valueAsString.length() + 1, TypeToken.NODE_VALUE);
                 return new Node(curName, valueToObject(valueAsString));
             }
         }

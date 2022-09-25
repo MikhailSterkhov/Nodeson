@@ -1,10 +1,8 @@
 package net.nodeson.parse;
 
 import lombok.NonNull;
-import net.nodeson.Node;
-import net.nodeson.NodesonObject;
+import net.nodeson.*;
 import net.nodeson.token.JsonTokenizer;
-import net.nodeson.NodesonUnsafe;
 
 public class CommonNodesonParser extends AbstractNodesonParser {
 
@@ -51,25 +49,15 @@ public class CommonNodesonParser extends AbstractNodesonParser {
 
         nodesonObject.forEachOrdered(node -> {
 
-            stringBuffer.append(node.getName());
-            stringBuffer.append(":");
-
             Object value = node.getValue();
-
-            if (value instanceof String) {
-                stringBuffer.append("\"").append(value).append("\"");
-            }
-            else if (value instanceof Number || value.getClass().isPrimitive()) {
-                stringBuffer.append(value);
-            }
-            else if (value instanceof Node) {
-                stringBuffer.append(parse(((Node) value).getValue()));
-            }
-            else {
-                stringBuffer.append(parse(toNodeson(value)));
+            if (value == null) {
+                return true;
             }
 
-            stringBuffer.append(",");
+            Class<?> valueType = NodesonUnsafe.getObjectType(value);
+            NodesonAdapter<Object> adapter = Nodeson.getNodesonInstance().getCheckedAdapter(valueType);
+
+            stringBuffer.append(node.getName()).append(":").append(adapter.serialize(value)).append(",");
             return true;
         });
 

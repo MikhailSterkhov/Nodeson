@@ -8,29 +8,35 @@ import net.nodeson.Nodeson;
 import net.nodeson.NodesonObject;
 import net.nodeson.NodesonParser;
 
-public class NodesonTest {
+import java.util.UUID;
+
+public class HardNodesonTest {
 
     @Getter
     @ToString
     @RequiredArgsConstructor
     @FieldDefaults(makeFinal = true)
-    public static class TestObject {
+    public static class HardTestObject {
 
         private transient int id;
 
-        private String name;
-
         private int x, y, z;
+
+        private UUID uuid;
+
+        private Class<?> parentType;
+        private NodesonTest.TestObject parent;
     }
 
     public static void main(String[] args) {
-        TestObject testObject = new TestObject(5, "itzstonlex", 45, 6, 901);
+        HardTestObject testObject = new HardTestObject(5, 45, 6, 901, UUID.randomUUID(),
+                NodesonTest.TestObject.class, new NodesonTest.TestObject(1, "itzstonlex", 35, 50, 4));
 
         testObjectParsing(Nodeson.common(), testObject);
         testObjectParsing(Nodeson.parallel(), testObject);
     }
 
-    public static void testObjectParsing(NodesonParser parser, TestObject testObject) {
+    public static void testObjectParsing(NodesonParser parser, HardTestObject testObject) {
         System.out.println("\n" + parser.getClass() + ":");
 
         long fullTime = 0;
@@ -43,7 +49,7 @@ public class NodesonTest {
         fullTime += System.currentTimeMillis() - startTime;
         startTime = System.currentTimeMillis();
 
-        TestObject converted = parser.convert(json, TestObject.class);
+        HardTestObject converted = parser.convert(json, HardTestObject.class);
         System.out.println("Conversion: " + converted);
 
         System.out.println(">> Speed time: " + (System.currentTimeMillis() - startTime) + "ms");

@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -18,39 +19,48 @@ public class NodesonObject {
     private NodesonParser parser;
 
     @ToString.Include
-    private NodesonMap elements = new NodesonMap();
+    @NonFinal
+    private NodesonMap elements;
+
+    private NodesonMap getElements() {
+        if (elements == null) {
+            elements = new NodesonMap();
+        }
+
+        return elements;
+    }
 
     public NodesonObject(NodesonParser parser, NodesonMap nodesonMap) {
         this(parser);
-        elements.putAll(nodesonMap);
+        getElements().putAll(nodesonMap);
     }
 
     public NodesonObject(NodesonParser parser, Collection<Node> nodes) {
         this(parser);
-        nodes.forEach(elements::put);
+        nodes.forEach(getElements()::put);
     }
 
     public int size() {
-        return elements.size();
+        return getElements().size();
     }
 
     public void clear() {
-        elements.clear();
+        getElements().clear();
     }
 
     public Node getNode(String name) {
-        if (!elements.containsKey(name)) {
+        if (!getElements().containsKey(name)) {
             return null;
         }
-        return new Node(name, elements.get(name));
+        return new Node(name, getElements().get(name));
     }
 
     public boolean addNode(@NonNull Node node) {
-        return elements.put(node) == null;
+        return getElements().put(node) == null;
     }
 
     public boolean removeNode(@NonNull Node node) {
-        return elements.remove(node) != null;
+        return getElements().remove(node) != null;
     }
 
     public boolean addNode(@NonNull String name, Object value) {
@@ -63,6 +73,6 @@ public class NodesonObject {
     }
 
     public void forEachOrdered(@NonNull Predicate<Node> foreach) {
-        elements.forEachOrdered(foreach);
+        getElements().forEachOrdered(foreach);
     }
 }
