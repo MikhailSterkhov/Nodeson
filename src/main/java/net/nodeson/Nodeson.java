@@ -42,7 +42,7 @@ public final class Nodeson {
 
     @SuppressWarnings("unchecked")
     public <T> NodesonAdapter<T> getAdapter(Class<T> type) {
-        return (NodesonAdapter<T>) adaptersMap.getOrDefault(type, OBJECT_ADAPTER);
+        return (NodesonAdapter<T>) adaptersMap.getOrDefault(NodesonUnsafe.getObjectType(type), OBJECT_ADAPTER);
     }
 
     @SuppressWarnings("unchecked")

@@ -30,8 +30,8 @@ public class NodesonUnsafe {
     private final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
 
     private final Map<Class<?>, NodesonMap> TYPES_VARIABLES_MAP = new HashMap<>();
-
-    private final Map<Field, MethodHandle> FIELDS_GETTERS_MAP = new HashMap<>(),
+    private final Map<Field, MethodHandle>
+            FIELDS_GETTERS_MAP = new HashMap<>(),
             FIELDS_SETTERS_MAP = new HashMap<>();
 
     public synchronized <T> T allocate(Class<T> type) {
@@ -127,8 +127,8 @@ public class NodesonUnsafe {
             try {
                 Field field = type.getDeclaredField(node.getName());
 
-                Class<?> fieldType = getObjectType(field.getType());
-                Class<?> valueType = getObjectType(value);
+                Class<?> fieldType = field.getType();
+                Class<?> valueType = value.getClass();
 
                 if (!valueType.equals(fieldType)) {
 
