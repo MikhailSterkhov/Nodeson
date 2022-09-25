@@ -40,6 +40,8 @@ public class JsonTokenizer implements Enumeration<Node> {
 
     private void doNextAsName(int pointerAdd, String sub) {
         curName = sub.substring(0, pointerAdd);
+        curName = curName.startsWith("\"") && curName.endsWith("\"") ? curName.substring(1, curName.length() - 1) : curName;
+
         doNext(pointerAdd, TypeToken.NODE_NAME);
     }
 
@@ -118,10 +120,6 @@ public class JsonTokenizer implements Enumeration<Node> {
             return null;
         }
 
-        if (part.startsWith("\"")) {
-            part = part.substring(1);
-        }
-
         switch (prev) {
 
             case DELIMIT:
@@ -149,6 +147,10 @@ public class JsonTokenizer implements Enumeration<Node> {
             case NODE_NAME: {
                 if (curName == null) {
                     throw new NodesonTokenizeException("'%s' - incorrect format", json);
+                }
+
+                if (part.startsWith("\"")) {
+                    part = part.substring(1);
                 }
 
                 String valueAsString;

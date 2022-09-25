@@ -62,7 +62,7 @@ public class CommonNodesonParser extends AbstractNodesonParser {
     @Override
     public String parse(@NonNull NodesonObject nodesonObject) {
         StringBuilder stringBuilder = new StringBuilder()
-                .append("{");
+                .append('{');
 
         nodesonObject.forEachOrdered(node -> {
 
@@ -72,12 +72,12 @@ public class CommonNodesonParser extends AbstractNodesonParser {
             }
 
             NodesonAdapter<Object> adapter = Nodeson.getNodesonInstance().getCheckedAdapter(value.getClass());
-            stringBuilder.append(node.getName()).append(":").append(adapter.serialize(value)).append(",");
+            stringBuilder.append('"').append(node.getName()).append('"').append(':').append(adapter.serialize(value)).append(',');
 
             return true;
         });
 
         String line = stringBuilder.toString();
-        return line.substring(0, line.length() - 1) + "}";
+        return line.substring(0, line.length() - 1) + '}';
     }
 }
