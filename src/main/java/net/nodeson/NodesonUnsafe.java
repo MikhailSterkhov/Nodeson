@@ -1,23 +1,16 @@
-package net.nodeson.util;
+package net.nodeson;
 
 import lombok.experimental.UtilityClass;
-import net.nodeson.Node;
-import net.nodeson.NodesonMap;
-import net.nodeson.NodesonObject;
 import net.nodeson.exception.NodesonApplyingException;
 import sun.misc.Unsafe;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 @UtilityClass
-public class UnsafeAllocator {
+public class NodesonUnsafe {
 
     private Unsafe sunUnsafe;
     static {
@@ -31,8 +24,6 @@ public class UnsafeAllocator {
             exception.printStackTrace();
         }
     }
-
-    private final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
 
     private final Map<Class<?>, NodesonMap> TYPES_VARIABLES_MAP = new HashMap<>();
 
@@ -83,7 +74,9 @@ public class UnsafeAllocator {
             try {
                 Field declaredField = type.getDeclaredField(node.getName());
 
-                declaredField.setAccessible(true);
+                if (!declaredField.isAccessible()) {
+                    declaredField.setAccessible(true);
+                }
                 declaredField.set(source, node.getValue());
             }
             catch (IllegalAccessException | NoSuchFieldException e) {

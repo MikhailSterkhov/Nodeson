@@ -50,11 +50,11 @@ String json = common.parse(testObject); // 178ms
 TestObject converted = common.convert(json, TestObject.class); // 11ms
 ```
 
-**Parallel:** (20ms)
+**Parallel:** (109ms)
 ```java
-String json = parallel.parse(testObject); // 18ms
+String json = parallel.parse(testObject); // 101ms
         
-TestObject converted = parallel.convert(json, TestObject.class); // 2ms
+TestObject converted = parallel.convert(json, TestObject.class); // 7ms
 ```
 
 ---

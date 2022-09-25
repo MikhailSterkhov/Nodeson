@@ -4,16 +4,14 @@ import lombok.NonNull;
 import net.nodeson.Node;
 import net.nodeson.NodesonObject;
 import net.nodeson.token.JsonTokenizer;
-import net.nodeson.util.UnsafeAllocator;
-
-import java.lang.invoke.MethodHandles;
+import net.nodeson.NodesonUnsafe;
 
 public class CommonNodesonParser extends AbstractNodesonParser {
 
     @Override
     public NodesonObject toNodeson(@NonNull Object src) {
         try {
-            return new NodesonObject(this, UnsafeAllocator.toNodesMap(src));
+            return new NodesonObject(this, NodesonUnsafe.toNodesMap(src));
         }
         catch (IllegalAccessException exception) {
             throw new RuntimeException(exception);
@@ -40,9 +38,9 @@ public class CommonNodesonParser extends AbstractNodesonParser {
     public <T> T convert(@NonNull String parsedLine, @NonNull Class<T> type) {
         NodesonObject nodesonObject = toNodeson(parsedLine);
 
-        T instance = UnsafeAllocator.allocate(type);
+        T instance = NodesonUnsafe.allocate(type);
 
-        UnsafeAllocator.applyNodes(instance, nodesonObject);
+        NodesonUnsafe.applyNodes(instance, nodesonObject);
         return instance;
     }
 
