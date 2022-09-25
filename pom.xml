@@ -11,6 +11,14 @@
     <name>Nodeson</name>
     <description>Parse Java Objects and Fields to JSON</description>
 
+    <developers>
+        <developer>
+            <id>ItzStonlex</id>
+            <email>itzstonlex@bk.ru</email>
+            <url>https://github.com/ItzStonlex</url>
+        </developer>
+    </developers>
+
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
@@ -24,4 +32,32 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>${project.name}</finalName>
+        <defaultGoal>clean package install</defaultGoal>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                    <outputDirectory>build</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
