@@ -44,7 +44,7 @@ public class CommonNodesonParser extends AbstractNodesonParser {
 
     @Override
     public <T> T convert(@NonNull String parsedLine, @NonNull Class<T> type) {
-        if (!isNotJson(parsedLine)) {
+        if (isNotJson(parsedLine)) {
             NodesonAdapter<Object> adapter = Nodeson.getNodesonInstance().getCheckedAdapter(type);
 
             @SuppressWarnings("unchecked") T uncheckedInstance = (T) adapter.deserialize(type, parsedLine);

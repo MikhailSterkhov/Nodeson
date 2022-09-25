@@ -99,10 +99,6 @@ public class NodesonUnsafe {
         return type;
     }
 
-    public synchronized Class<?> getObjectType(Object src) {
-        return getObjectType(src.getClass());
-    }
-
     public synchronized void applyNodes(Object source, NodesonObject nodesonObject) {
         if (source instanceof NodesonObjectBuilder) {
             applyNodes(((NodesonObjectBuilder) source).build(), nodesonObject);
@@ -135,7 +131,7 @@ public class NodesonUnsafe {
                     NodesonAdapter<Object> fieldAdapter = Nodeson.getNodesonInstance().getCheckedAdapter(fieldType);
                     NodesonAdapter<Object> valueAdapter = Nodeson.getNodesonInstance().getCheckedAdapter(valueType);
 
-                    value = fieldAdapter.deserialize(fieldType, valueAdapter.serialize(value));
+                    value = fieldAdapter.deserialize(getObjectType(fieldType), valueAdapter.serialize(value));
                 }
 
                 if (!field.isAccessible()) {
