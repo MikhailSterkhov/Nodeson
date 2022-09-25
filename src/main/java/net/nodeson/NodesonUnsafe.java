@@ -34,6 +34,22 @@ public class NodesonUnsafe {
             FIELDS_GETTERS_MAP = new HashMap<>(),
             FIELDS_SETTERS_MAP = new HashMap<>();
 
+    private void cleanupCaches() {
+        int cachesMaxSize = (int) (Integer.MAX_VALUE / 1.5);
+
+        if (TYPES_VARIABLES_MAP.size() > cachesMaxSize) {
+            TYPES_VARIABLES_MAP.clear();
+        }
+
+        if (FIELDS_GETTERS_MAP.size() > cachesMaxSize) {
+            FIELDS_GETTERS_MAP.clear();
+        }
+
+        if (FIELDS_SETTERS_MAP.size() > cachesMaxSize) {
+            FIELDS_SETTERS_MAP.clear();
+        }
+    }
+
     public synchronized <T> T allocate(Class<T> type) {
         try {
             @SuppressWarnings("unchecked") T instance
@@ -78,7 +94,9 @@ public class NodesonUnsafe {
             map.put(field.getName(), getter.invoke(src));
         }
 
+        cleanupCaches();
         TYPES_VARIABLES_MAP.put(type, map);
+
         return map;
     }
 
@@ -116,6 +134,7 @@ public class NodesonUnsafe {
         }
 
         Class<?> type = source.getClass();
+        cleanupCaches();
 
         nodesonObject.forEachOrdered(node -> {
             Object value = node.getValue();
