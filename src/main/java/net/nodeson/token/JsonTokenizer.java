@@ -76,6 +76,8 @@ public class JsonTokenizer implements Enumeration<Node> {
     }
 
     private Object valueToObject(String value) {
+        // TODO - Make adapters validations & remove this code
+
         if (isBoolean(value)) {
             return Boolean.parseBoolean(value);
         }
