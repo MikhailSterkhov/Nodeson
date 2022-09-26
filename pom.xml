@@ -9,7 +9,7 @@
     <version>1.0</version>
 
     <name>Nodeson</name>
-    <description>Parse Java Objects and Fields to JSON</description>
+    <description>Fast and flexible library for parse a Java-Objects to JSON</description>
 
     <developers>
         <developer>
@@ -18,6 +18,14 @@
             <url>https://github.com/ItzStonlex</url>
         </developer>
     </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>ItzStonlex</name>
+            <url>https://maven.pkg.github.com/ItzStonlex/JRestFramework</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
