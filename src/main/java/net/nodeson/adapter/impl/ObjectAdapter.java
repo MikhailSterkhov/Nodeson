@@ -8,11 +8,11 @@ public final class ObjectAdapter extends AbstractMappingAdapter<Object> {
 
     @Override
     protected NodesonObject doSerialize(@NonNull Object source) {
-        return COMMON_PARSER.toNodeson(source);
+        return COMMON_PARSER.wrap(source);
     }
 
     @Override
     protected NodesonObject doDeserialize(@NonNull String json) {
-        return COMMON_PARSER.toNodeson(json);
+        return COMMON_PARSER.wrap(json);
     }
 }

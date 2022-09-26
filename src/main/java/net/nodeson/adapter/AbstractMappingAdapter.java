@@ -14,12 +14,12 @@ public abstract class AbstractMappingAdapter<T> implements NodesonAdapter<T> {
     @Override
     public String serialize(@NonNull T source) {
         NodesonObject nodesonObject = doSerialize(source);
-        return COMMON_PARSER.parse(nodesonObject);
+        return COMMON_PARSER.parseTo(nodesonObject);
     }
 
     @Override
     public T deserialize(@NonNull Class<? extends T> type, @NonNull String json) {
         NodesonObject nodesonObject = doDeserialize(json);
-        return COMMON_PARSER.convert(nodesonObject, type);
+        return COMMON_PARSER.parseFrom(nodesonObject, type);
     }
 }

@@ -4,17 +4,17 @@ import lombok.NonNull;
 
 public interface NodesonParser {
 
-    NodesonObject toNodeson(@NonNull Object src);
+    NodesonObject wrap(@NonNull Object src);
 
-    NodesonObject toNodeson(@NonNull String parsedLine);
+    NodesonObject wrap(@NonNull String parsedLine);
 
-    <T> T convert(@NonNull NodesonObjectBuilder nodesonObject, @NonNull Class<T> type);
+    <T> T parseFrom(@NonNull NodesonObjectBuilder nodesonObject, @NonNull Class<T> type);
 
-    <T> T convert(@NonNull NodesonObject nodesonObject, @NonNull Class<T> type);
+    <T> T parseFrom(@NonNull NodesonObject nodesonObject, @NonNull Class<T> type);
 
-    <T> T convert(@NonNull String parsedLine, @NonNull Class<T> type);
+    <T> T parseFrom(@NonNull String parsedLine, @NonNull Class<T> type);
 
-    String parse(@NonNull NodesonObject nodesonObject);
+    String parseTo(@NonNull NodesonObject nodesonObject);
 
-    String parse(@NonNull Object src);
+    String parseTo(@NonNull Object src);
 }

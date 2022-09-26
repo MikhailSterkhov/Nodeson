@@ -14,6 +14,6 @@ public final class NodesonObjectBuilderAdapter extends AbstractMappingAdapter<No
 
     @Override
     protected NodesonObject doDeserialize(@NonNull String json) {
-        return COMMON_PARSER.toNodeson(json);
+        return COMMON_PARSER.wrap(json);
     }
 }

@@ -54,27 +54,27 @@ public final class Nodeson {
         adaptersMap.put(type, adapter);
     }
 
-    public <T> T convert(String json, Class<T> type) {
-        return COMMON.convert(json, type);
-    }
-
-    public <T> T parallelConvert(String json, Class<T> type) {
-        return PARALLEL.convert(json, type);
-    }
-
     public NodesonObject wrap(Object object) {
-        return COMMON.toNodeson(object);
+        return COMMON.wrap(object);
     }
 
-    public NodesonObject parallelWrap(Object object) {
-        return PARALLEL.toNodeson(object);
+    public NodesonObject wrapParallel(Object object) {
+        return PARALLEL.wrap(object);
     }
 
-    public String parse(Object object) {
-        return COMMON.parse(object);
+    public <T> T fromJson(String json, Class<T> type) {
+        return COMMON.parseFrom(json, type);
     }
 
-    public String parallelParse(Object object) {
-        return PARALLEL.parse(object);
+    public <T> T fromJsonParallel(String json, Class<T> type) {
+        return PARALLEL.parseFrom(json, type);
+    }
+
+    public String toJson(Object object) {
+        return COMMON.parseTo(object);
+    }
+
+    public String toJsonParallel(Object object) {
+        return PARALLEL.parseTo(object);
     }
 }

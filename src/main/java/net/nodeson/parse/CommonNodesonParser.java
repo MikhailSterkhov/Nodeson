@@ -13,7 +13,7 @@ public class CommonNodesonParser extends AbstractNodesonParser {
     }
 
     @Override
-    public NodesonObject toNodeson(@NonNull Object src) {
+    public NodesonObject wrap(@NonNull Object src) {
         try {
             return new NodesonObject(this, NodesonUnsafe.toNodesMap(src));
         }
@@ -23,7 +23,7 @@ public class CommonNodesonParser extends AbstractNodesonParser {
     }
 
     @Override
-    public NodesonObject toNodeson(@NonNull String parsedLine) {
+    public NodesonObject wrap(@NonNull String parsedLine) {
         if (isNotJson(parsedLine)) {
             return new NodesonObject(this, Collections.singleton(new Node("value", parsedLine)));
         }
@@ -43,7 +43,7 @@ public class CommonNodesonParser extends AbstractNodesonParser {
     }
 
     @Override
-    public <T> T convert(@NonNull String parsedLine, @NonNull Class<T> type) {
+    public <T> T parseFrom(@NonNull String parsedLine, @NonNull Class<T> type) {
         if (isNotJson(parsedLine)) {
             NodesonAdapter<Object> adapter = Nodeson.getNodesonInstance().getCheckedAdapter(type);
 
@@ -51,7 +51,7 @@ public class CommonNodesonParser extends AbstractNodesonParser {
             return uncheckedInstance;
         }
 
-        NodesonObject nodesonObject = toNodeson(parsedLine);
+        NodesonObject nodesonObject = wrap(parsedLine);
 
         T instance = NodesonUnsafe.allocate(type);
 
@@ -60,7 +60,7 @@ public class CommonNodesonParser extends AbstractNodesonParser {
     }
 
     @Override
-    public String parse(@NonNull NodesonObject nodesonObject) {
+    public String parseTo(@NonNull NodesonObject nodesonObject) {
         StringBuilder stringBuilder = new StringBuilder()
                 .append('{');
 

@@ -20,22 +20,22 @@ public class ParallelNodesonParser extends AbstractNodesonParser {
     private NodesonParser impl;
 
     @Override
-    public NodesonObject toNodeson(@NonNull Object src) {
-        return CompletableFuture.supplyAsync(() -> impl.toNodeson(src), PARALLEL_POOL).join();
+    public NodesonObject wrap(@NonNull Object src) {
+        return CompletableFuture.supplyAsync(() -> impl.wrap(src), PARALLEL_POOL).join();
     }
 
     @Override
-    public NodesonObject toNodeson(@NonNull String parsedLine) {
-        return CompletableFuture.supplyAsync(() -> impl.toNodeson(parsedLine), PARALLEL_POOL).join();
+    public NodesonObject wrap(@NonNull String parsedLine) {
+        return CompletableFuture.supplyAsync(() -> impl.wrap(parsedLine), PARALLEL_POOL).join();
     }
 
     @Override
-    public <T> T convert(@NonNull String parsedLine, @NonNull Class<T> type) {
-        return CompletableFuture.supplyAsync(() -> impl.convert(parsedLine, type), PARALLEL_POOL).join();
+    public <T> T parseFrom(@NonNull String parsedLine, @NonNull Class<T> type) {
+        return CompletableFuture.supplyAsync(() -> impl.parseFrom(parsedLine, type), PARALLEL_POOL).join();
     }
 
     @Override
-    public String parse(@NonNull NodesonObject nodesonObject) {
-        return CompletableFuture.supplyAsync(() -> impl.parse(nodesonObject), PARALLEL_POOL).join();
+    public String parseTo(@NonNull NodesonObject nodesonObject) {
+        return CompletableFuture.supplyAsync(() -> impl.parseTo(nodesonObject), PARALLEL_POOL).join();
     }
 }

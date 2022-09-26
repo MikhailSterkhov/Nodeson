@@ -10,7 +10,7 @@ import net.nodeson.NodesonParser;
 
 import java.util.UUID;
 
-public class HardNodesonTest {
+public class NodesonBigTest {
 
     @Getter
     @ToString
@@ -42,21 +42,21 @@ public class HardNodesonTest {
         long fullTime = 0;
         long startTime = System.currentTimeMillis();
 
-        String json = parser.parse(testObject);
+        String json = parser.parseTo(testObject);
         System.out.println("Json: " + json);
 
         System.out.println(">> Speed time: " + (System.currentTimeMillis() - startTime) + "ms");
         fullTime += System.currentTimeMillis() - startTime;
         startTime = System.currentTimeMillis();
 
-        HardTestObject converted = parser.convert(json, HardTestObject.class);
+        HardTestObject converted = parser.parseFrom(json, HardTestObject.class);
         System.out.println("Conversion: " + converted);
 
         System.out.println(">> Speed time: " + (System.currentTimeMillis() - startTime) + "ms");
         fullTime += System.currentTimeMillis() - startTime;
         startTime = System.currentTimeMillis();
 
-        NodesonObject nodesonObject = parser.toNodeson(converted);
+        NodesonObject nodesonObject = parser.wrap(converted);
         System.out.println(nodesonObject);
 
         System.out.println(">> Speed time: " + (System.currentTimeMillis() - startTime) + "ms");

@@ -45,16 +45,16 @@ Let's try to parse an object to JSON and back, measuring the speed:
 
 **Common:** (189ms)
 ```java
-String json = common.parse(testObject); // 178ms
+String json = common.parseTo(testObject); // 178ms
         
-TestObject converted = common.convert(json, TestObject.class); // 11ms
+TestObject converted = common.parseFrom(json, TestObject.class); // 11ms
 ```
 
 **Parallel:** (109ms)
 ```java
-String json = parallel.parse(testObject); // 101ms
+String json = parallel.parseTo(testObject); // 101ms
         
-TestObject converted = parallel.convert(json, TestObject.class); // 7ms
+TestObject converted = parallel.parseFrom(json, TestObject.class); // 7ms
 ```
 
 ---

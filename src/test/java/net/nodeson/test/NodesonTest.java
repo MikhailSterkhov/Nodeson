@@ -36,21 +36,21 @@ public class NodesonTest {
         long fullTime = 0;
         long startTime = System.currentTimeMillis();
 
-        String json = parser.parse(testObject);
+        String json = parser.parseTo(testObject);
         System.out.println("Json: " + json);
 
         System.out.println(">> Speed time: " + (System.currentTimeMillis() - startTime) + "ms");
         fullTime += System.currentTimeMillis() - startTime;
         startTime = System.currentTimeMillis();
 
-        TestObject converted = parser.convert(json, TestObject.class);
+        TestObject converted = parser.parseFrom(json, TestObject.class);
         System.out.println("Conversion: " + converted);
 
         System.out.println(">> Speed time: " + (System.currentTimeMillis() - startTime) + "ms");
         fullTime += System.currentTimeMillis() - startTime;
         startTime = System.currentTimeMillis();
 
-        NodesonObject nodesonObject = parser.toNodeson(converted);
+        NodesonObject nodesonObject = parser.wrap(converted);
         System.out.println(nodesonObject);
 
         System.out.println(">> Speed time: " + (System.currentTimeMillis() - startTime) + "ms");

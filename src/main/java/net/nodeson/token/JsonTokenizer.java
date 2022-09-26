@@ -93,7 +93,7 @@ public class JsonTokenizer implements Enumeration<Node> {
             return Double.parseDouble(value);
         }
         else if (isObject(value)) {
-            return parser.toNodeson(value);
+            return parser.wrap(value);
         }
 
         throw new NodesonTokenizeException("Value '%s' can`t be initialize", value);
